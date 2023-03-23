@@ -5,10 +5,12 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
+
 
 public class Constants {
     public static final class DriveConstants{
@@ -76,6 +78,29 @@ public class Constants {
         public static final int kClimberUpMap = 7;
         public static final int kClimberDownMap = 8;
         public static final int kSwapDriveMap = 7;
+
+
+
+
+        //Values to use for trajectory
+
+        //Feedfoard + Feedback
+        public static final double ks = 0;
+        public static final double kv = 0;
+        public static final double ka = 0;
+        public static final double kPDriveVel = 0;
+
+        //Differential Drive Kinematics
+        public static final double kTrackWidthMeters = 0;
+        public static final DifferentialDriveKinematics kTankDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
+
+        //Max Acceleration
+        public static final double kMaxSpeedMetersPerSecond = 0;
+        public static final double kMaxSpeedMetersPerSecondSquared = 0;
+
+        //Ramsete baseline values
+        public static final double kRamseteB = 0;
+        public static final double kRamseteZeta = 0;
     }
 
     public static final class IOConstants {
@@ -91,7 +116,6 @@ public class Constants {
         public static int armAxisNum = 1;
         public static int kArmManualControlButton = 4;
     }
-    
 
     public static final class ArmConstants {
         // PID gains may have to be adjusted based on the responsiveness of control loop.
@@ -145,5 +169,7 @@ public class Constants {
         public static final int kIzone = 0;
         // kPeakOutput is the maximum output of the PID loop, used to set the limit of the motor
         public static final double kPeakOutput = 0.5;
-}
+    }
+
+    
 }
