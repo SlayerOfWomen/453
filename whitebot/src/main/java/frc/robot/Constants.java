@@ -85,22 +85,23 @@ public class Constants {
         //Values to use for trajectory
 
         //Feedfoard + Feedback
-        public static final double ks = 0;
-        public static final double kv = 0;
-        public static final double ka = 0;
-        public static final double kPDriveVel = 0;
+        public static final double ks = .64046;
+        public static final double kv = 10.558;
+        public static final double ka = 2.8604;
+        public static final double kPDriveVel = 0.29181;
 
         //Differential Drive Kinematics
-        public static final double kTrackWidthMeters = 0;
-        public static final DifferentialDriveKinematics kTankDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
+        public static final double kTrackWidthMeters = 0.4826;
+        public static final DifferentialDriveKinematics kTankDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
         //Max Acceleration
-        public static final double kMaxSpeedMetersPerSecond = 0;
-        public static final double kMaxSpeedMetersPerSecondSquared = 0;
+        public static final double kMaxSpeedMetersPerSecond = 1;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 0.05;
 
         //Ramsete baseline values
-        public static final double kRamseteB = 0;
-        public static final double kRamseteZeta = 0;
+        public static final double kRamseteB = 2;
+        public static final double kRamseteZeta = 0.7;
+        public static final double robotConversion = 5.9436;
     }
 
     public static final class IOConstants {

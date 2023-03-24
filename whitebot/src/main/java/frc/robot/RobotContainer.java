@@ -40,53 +40,66 @@ public class RobotContainer {
     m_tankDriveSubsystem.setDefaultCommand(m_tankDriveCmd);
   }
 
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
   public Command getAutonomousCommand() {
-    //Creates a voltage constraint so the robot doesn't accelerate too fast
-    var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-      new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka), DriveConstants.kTankDriveKinematics, 10);
-      
+    // Create a voltage constraint to ensure we don't accelerate too fast
+    var autoVoltageConstraint =
+        new DifferentialDriveVoltageConstraint(
+            new SimpleMotorFeedforward(
+                DriveConstants.ks,
+                DriveConstants.kv,
+                DriveConstants.ka),
+            DriveConstants.kTankDriveKinematics,
+            10);
 
-    //Creates a config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(DriveConstants.kMaxSpeedMetersPerSecond, DriveConstants.kMaxSpeedMetersPerSecondSquared)
-    //Addition of kinematics to ensure max speed is obeyed
-    .setKinematics(DriveConstants.kTankDriveKinematics)
-    //adds voltage constraint from line 31
-    .addConstraint(autoVoltageConstraint);
+    // Create config for trajectory
+    TrajectoryConfig config =
+        new TrajectoryConfig(
+                DriveConstants.kMaxSpeedMetersPerSecond,
+                DriveConstants.kMaxAccelerationMetersPerSecondSquared)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(DriveConstants.kDriveKinematics)
+            // Apply the voltage constraint
+            .addConstraint(autoVoltageConstraint);
 
-    //Creates an example trajectory to follow (units in meters)
-    Trajectory exmaplTrajectory = 
+    // An example trajectory to follow.  All units in meters.
+    Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
-          // Start at the origin facing the +X direction
-          new Pose2d(0, 0, new Rotation2d(0)), 
-          // Pass through two interior waypoints, making an S curve path
-          List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-          // End 3 meters ahead of where the robot started, facing forward
-          new Pose2d(3, 0, new Rotation2d(0)), 
-          // Pass config
-          config);
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+            // Pass through these two interior waypoints, making an 's' curve path
+            List.of(new Translation2d((1 / DriveConstants.robotConversion), (0.5 / DriveConstants.robotConversion)), new Translation2d((2 / DriveConstants.robotConversion), (-0.5 / DriveConstants.robotConversion))),
+            // End 3 meters straight ahead of where we started, facing forward
+            new Pose2d((2 / DriveConstants.robotConversion), 0, new Rotation2d(0)),
+            // Pass config
+            config);
 
-    RamseteCommand ramseteCommand = 
+    RamseteCommand ramseteCommand =
         new RamseteCommand(
-          exmaplTrajectory, 
-          m_tankDriveSubsystem::getPose, 
-          new RamseteController(DriveConstants.kRamseteB, DriveConstants.kRamseteZeta),
-          new SimpleMotorFeedforward(
-            DriveConstants.ks, 
-            DriveConstants.kv,
-            DriveConstants.ka), 
-          DriveConstants.kTankDriveKinematics, 
-          m_tankDriveSubsystem::getWheelSpeeds, 
-          new PIDController(DriveConstants.kPDriveVel, 0, 0), 
-          new PIDController(DriveConstants.kPDriveVel, 0, 0), 
-          // RamseteCommand passes volts to the callback
-          m_tankDriveSubsystem::tankDriveVotls, 
-          m_tankDriveSubsystem);
-    
-    //Reset odometry to the starting pose of the trajectory
-    m_tankDriveSubsystem.resetOdometry(exmaplTrajectory.getInitialPose());
+            exampleTrajectory,
+            m_tankDriveSubsystem::getPose,
+            new RamseteController(DriveConstants.kRamseteB, DriveConstants.kRamseteZeta),
+            new SimpleMotorFeedforward(
+                DriveConstants.ks,
+                DriveConstants.kv,
+                DriveConstants.ka),
+            DriveConstants.kTankDriveKinematics,
+            m_tankDriveSubsystem::getWheelSpeeds,
+            new PIDController(DriveConstants.kPDriveVel, 0, 0),
+            new PIDController(DriveConstants.kPDriveVel, 0, 0),
+            // RamseteCommand passes volts to the callback
+            m_tankDriveSubsystem::tankDriveVolts,
+            m_tankDriveSubsystem);
 
-    // Run path following command, then stop at the end
-    return ramseteCommand.andThen(() -> m_tankDriveSubsystem.tankDriveVotls(0, 0));
+    // Reset odometry to the starting pose of the trajectory.
+    m_tankDriveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
+
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> m_tankDriveSubsystem.tankDriveVolts(0, 0));
   }
 }
 

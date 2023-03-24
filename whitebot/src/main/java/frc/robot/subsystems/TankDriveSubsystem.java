@@ -99,7 +99,7 @@ public class TankDriveSubsystem extends SubsystemBase{
 
 
     //Drives the robots left and right side VIA volts
-    public void tankDriveVotls(double leftVolts, double rightVolts)
+    public void tankDriveVolts(double leftVolts, double rightVolts)
     {
         m_leftMotors.setVoltage(leftVolts);
         m_rightMotors.setVoltage(rightVolts);
